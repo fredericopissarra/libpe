@@ -1,3 +1,4 @@
+/* vim: set ts=4 sw=4 noet: */
 /*
     libpe - the PE library
 
@@ -78,8 +79,8 @@ pe_exports_t *pe_exports(pe_ctx_t *ctx) {
 	// If `NumberOfNames == 0` then all functions are exported by ordinal.
 	// Otherwise `NumberOfNames` should be equal to `NumberOfFunctions`
 	// if (exp->NumberOfNames != 0 && exp->NumberOfNames != exp->NumberOfFunctions) {
-	// 	exports->err = LIBPE_E_EXPORTS_FUNC_NEQ_NAMES;
-	// 	return exports;
+	//	exports->err = LIBPE_E_EXPORTS_FUNC_NEQ_NAMES;
+	//	return exports;
 	// }
 
 	//
@@ -148,7 +149,6 @@ pe_exports_t *pe_exports(pe_ctx_t *ctx) {
 		const uint32_t entry_va = *entry_va_list;
 		const uint64_t entry_name_ofs = offsets_to_Names[i];
 
-		// FIX: Don't need to zero all elements!
 		// FIXME: 300 bytes is enough or too much?
 		char fname[300];
 		fname[0] = 0;

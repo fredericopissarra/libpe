@@ -1,3 +1,4 @@
+/* vim: set ts=4 sw=4 noet: */
 /*
 	libpe - the PE library
 
@@ -215,188 +216,6 @@ char *pe_resource_parse_string_u(pe_ctx_t *ctx, char *output, size_t output_size
 	return output;
 }
 
-// FIX: Retired code just to avoid unecessary warnings.
-#if 0
-static char *pe_resource_name_from_id(pe_ctx_t *ctx, char *out_name, size_t out_name_size, uint32_t id) {
-	const bool is_string = id & IMAGE_RESOURCE_NAME_IS_STRING; // entry->u0.data.NameIsString
-
-	// If it's a regular ID, simply use it.
-	if (!is_string) {
-		if (out_name == NULL) {
-			const size_t estimated_size = 8 + 1; // 8 == strlen("FFFFFFFF"), +1 for the `\0`.
-			out_name = malloc(estimated_size);
-			if (out_name == NULL) {
-				// TODO: Handle allocation failure.
-				abort();
-			}
-		}
-
-		snprintf(out_name, out_name_size, "%X", id);
-		return out_name;
-	}
-
-	id &= ~(uint32_t)IMAGE_RESOURCE_NAME_IS_STRING; // Ignore the highest bit.
-	const IMAGE_RESOURCE_DATA_STRING_U *data_string_u = LIBPE_PTR_ADD(ctx->cached_data.resources->resource_base_ptr, id);
-	if (!pe_can_read(ctx, data_string_u, sizeof(IMAGE_RESOURCE_DATA_STRING_U))) {
-		LIBPE_WARNING("Cannot read IMAGE_RESOURCE_DATA_STRING_U");
-		return false;
-	}
-
-	out_name = pe_resource_parse_string_u(ctx, out_name, out_name_size, data_string_u);
-	return out_name;
-}
-
-static char *pe_resource_name_from_type(char *out_name, size_t out_name_size, uint32_t type) {
-	const pe_resource_entry_info_t *match = pe_resource_entry_info_lookup(type);
-
-	if (out_name == NULL) {
-		const size_t estimated_size = (match != NULL ? strlen(match->name) : 8) + 1; // 8 == strlen("FFFFFFFF"), +1 for the `\0`.
-		out_name = malloc(estimated_size);
-		if (out_name == NULL) {
-			// TODO: Handle allocation failure.
-			abort();
-		}
-	}
-
-	if (match != NULL) {
-		strncpy(out_name, match->name, out_name_size);
-		out_name[out_name_size - 1] = '\0';
-	} else {
-		snprintf(out_name, out_name_size, "%" PRIX32, type);
-	}
-
-	return out_name;
-}
-
-static void pe_resource_debug_node(pe_ctx_t *ctx, const pe_resource_node_t *node) {
-	if (node == NULL)
-		return;
-
-	switch (node->type) {
-		default:
-			LIBPE_WARNING("Invalid node type");
-			break;
-		case LIBPE_RDT_RESOURCE_DIRECTORY:
-		{
-			char resource_name[256];
-			const size_t resource_name_size = sizeof(resource_name);
-
-      resource_name[0] = '\0';
-
-			if (node->dirLevel == LIBPE_RDT_LEVEL1) { // dirLevel == 1 is where Resource Types are defined.
-				if (node->parentNode != NULL && node->parentNode->type == LIBPE_RDT_DIRECTORY_ENTRY) {
-					IMAGE_RESOURCE_DIRECTORY_ENTRY *dir_entry = node->parentNode->raw.directoryEntry;
-					if (dir_entry->u0.data.NameIsString) {
-						pe_resource_name_from_id(ctx, resource_name, resource_name_size, dir_entry->u0.Name);
-					} else {
-						pe_resource_name_from_type(resource_name, resource_name_size, dir_entry->u0.Name);
-					}
-				}
-			} else {
-				if (node->parentNode != NULL && node->parentNode->type == LIBPE_RDT_DIRECTORY_ENTRY) {
-					IMAGE_RESOURCE_DIRECTORY_ENTRY *dir_entry = node->parentNode->raw.directoryEntry;
-					pe_resource_name_from_id(ctx, resource_name, resource_name_size, dir_entry->u0.Name);
-				} else {
-					resource_name[0] = '0';
-					resource_name[1] = '\0';
-				}
-			}
-
-			const IMAGE_RESOURCE_DIRECTORY * const dir = node->raw.resourceDirectory;
-
-			// Indentation.
-			for (size_t i=0; i < node->depth; i++)
-				printf("  ");
-			printf("LIBPE_RDT_RESOURCE_DIRECTORY [dirLevel=%d]: ", node->dirLevel);
-
-			printf("ResDir (%s) Entries:%02u[%02X] (Named:%02u[%02X], ID:%02u[%02X]) TimeDate:%08u[%08X]",
-				resource_name,
-				dir->NumberOfIdEntries + dir->NumberOfNamedEntries,
-				dir->NumberOfIdEntries + dir->NumberOfNamedEntries,
-				dir->NumberOfNamedEntries,
-				dir->NumberOfNamedEntries,
-				dir->NumberOfIdEntries,
-				dir->NumberOfIdEntries,
-				dir->TimeDateStamp,
-				dir->TimeDateStamp
-			);
-
-			if (dir->MajorVersion || dir->MinorVersion)
-				printf(" Vers:%u.%02u", dir->MajorVersion, dir->MinorVersion);
-
-			if (dir->Characteristics)
-				printf(" Char:%08u[%08X]", dir->Characteristics, dir->Characteristics);
-
-			printf("\n");
-			break;
-		}
-		case LIBPE_RDT_DIRECTORY_ENTRY:
-		{
-			// Indentation.
-			for (size_t i=0; i < node->depth; i++)
-				printf("  ");
-			printf("LIBPE_RDT_DIRECTORY_ENTRY [dirLevel=%d]: ", node->dirLevel);
-
-			const IMAGE_RESOURCE_DIRECTORY_ENTRY * const entry = node->raw.directoryEntry;
-
-			if (entry->u0.data.NameIsString) { // entry->u0.Name & IMAGE_RESOURCE_NAME_IS_STRING
-				char res_name[256];
-				pe_resource_name_from_id(ctx, res_name, sizeof(res_name), entry->u0.Name);
-				printf("Name: %s  DataEntryOffs: %08u[%08X]\n",
-					res_name, entry->u1.OffsetToData, entry->u1.OffsetToData);
-			} else {
-				printf("ID: %08u[%08X]  DataEntryOffs: %08u[%08X]\n",
-					entry->u0.Name, entry->u0.Name, entry->u1.OffsetToData, entry->u1.OffsetToData);
-			}
-			break;
-		}
-		case LIBPE_RDT_DATA_STRING:
-		{
-			const IMAGE_RESOURCE_DATA_STRING_U * const dataString = node->raw.dataString;
-
-			char ascii_string[256];
-			pe_resource_parse_string_u(ctx, ascii_string, sizeof(ascii_string), dataString);
-
-			// Indentation.
-			for (size_t i=0; i < node->depth; i++)
-				printf("  ");
-			printf("LIBPE_RDT_DATA_STRING [dirLevel=%d]: ", node->dirLevel);
-
-			printf("String: %s  Length: %02hu\n", ascii_string, dataString->Length);
-			break;
-		}
-		case LIBPE_RDT_DATA_ENTRY:
-		{
-			const IMAGE_RESOURCE_DATA_ENTRY * const data_entry = node->raw.dataEntry;
-
-			// Indentation.
-			for (size_t i=0; i < node->depth; i++)
-				printf("  ");
-			printf("LIBPE_RDT_DATA_ENTRY [dirLevel=%d]: ", node->dirLevel);
-
-			printf("DataRVA: %05u[%05X]  DataSize: %05u[%05X]  CodePage: %u[%X]\n",
-				data_entry->OffsetToData,
-				data_entry->OffsetToData,
-				data_entry->Size,
-				data_entry->Size,
-				data_entry->CodePage,
-				data_entry->CodePage);
-			break;
-		}
-	}
-}
-
-static void pe_resource_debug_nodes(pe_ctx_t *ctx, const pe_resource_node_t *node) {
-	if (node == NULL)
-		return;
-
-	pe_resource_debug_node(ctx, node);
-
-	pe_resource_debug_nodes(ctx, node->childNode);
-	pe_resource_debug_nodes(ctx, node->nextNode);
-}
-#endif
-
 static pe_resource_node_t *pe_resource_create_node(uint8_t depth, pe_resource_node_type_e type, void *raw_ptr, pe_resource_node_t *parent_node) {
 	pe_resource_node_t *node = calloc(1, sizeof(pe_resource_node_t));
 	if (node == NULL) {
@@ -553,13 +372,13 @@ static bool pe_resource_parse_nodes(pe_ctx_t *ctx, pe_resource_node_t *node) {
 			// const IMAGE_RESOURCE_DATA_ENTRY *data_entry_ptr = node->raw.dataEntry;
 
 			// fprintf(stderr, "DEBUG: CodePage=%u, OffsetToData=%u[%#x], Reserved=%u[%#x], Size=%u[%#x]\n",
-			// 	data_entry_ptr->CodePage,
-			// 	data_entry_ptr->OffsetToData,
-			// 	data_entry_ptr->OffsetToData,
-			// 	data_entry_ptr->Reserved,
-			// 	data_entry_ptr->Reserved,
-			// 	data_entry_ptr->Size,
-			// 	data_entry_ptr->Size);
+			//	data_entry_ptr->CodePage,
+			//	data_entry_ptr->OffsetToData,
+			//	data_entry_ptr->OffsetToData,
+			//	data_entry_ptr->Reserved,
+			//	data_entry_ptr->Reserved,
+			//	data_entry_ptr->Size,
+			//	data_entry_ptr->Size);
 
 			////////////////////////////////////////////////////////////////////////////////////
 			// TODO(jweyrich): To be written.
@@ -626,6 +445,7 @@ pe_resources_t *pe_resources(pe_ctx_t *ctx) {
 void pe_resources_dealloc(pe_resources_t *obj) {
 	if (obj == NULL)
 		return;
+
 	pe_resource_free_nodes(obj->root_node);
 	free(obj);
 }

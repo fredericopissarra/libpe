@@ -1,22 +1,23 @@
+/* vim: set ts=4 sw=4 noet: */
 /*
-    libpe - the PE library
+	libpe - the PE library
 
-    Copyright (C) 2010 - 2017 libpe authors
-    
-    This file is part of libpe.
+	Copyright (C) 2010 - 2017 libpe authors
+	
+	This file is part of libpe.
 
-    libpe is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+	libpe is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Lesser General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
 
-    libpe is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
+	libpe is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public License
-    along with libpe.  If not, see <http://www.gnu.org/licenses/>.
+	You should have received a copy of the GNU Lesser General Public License
+	along with libpe.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #ifndef LIBPE_H
@@ -50,7 +51,7 @@ extern "C" {
 #define MAX_SECTIONS 96
 
 // TODO(jweyrich): Does the PE spec define a length limit for
-//                 function names and import/export library names?
+//				   function names and import/export library names?
 #define MAX_DLL_NAME 256
 #define MAX_FUNCTION_NAME 512
 
@@ -62,7 +63,7 @@ extern "C" {
 
 typedef enum {
 	LIBPE_OPT_NOCLOSE_FD = (1 << 0), // Keeps `stream` open for further usage.
-	LIBPE_OPT_OPEN_RW    = (1 << 1)  // Open file for read and writing
+	LIBPE_OPT_OPEN_RW	 = (1 << 1)  // Open file for read and writing
 } pe_option_e;
 
 typedef uint16_t pe_options_e; // bitmasked pe_option_e values

@@ -1,23 +1,23 @@
 /* vim:set ts=4 sw=4 noet: */
 /*
-    libpe - the PE library
+	libpe - the PE library
 
-    Copyright (C) 2010 - 2017 libpe authors
-    
-    This file is part of libpe.
+	Copyright (C) 2010 - 2017 libpe authors
+	
+	This file is part of libpe.
 
-    libpe is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+	libpe is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Lesser General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
 
-    libpe is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
+	libpe is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public License
-    along with libpe.  If not, see <http://www.gnu.org/licenses/>.
+	You should have received a copy of the GNU Lesser General Public License
+	along with libpe.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "libpe/utils.h"
@@ -34,8 +34,8 @@
 #include <inttypes.h>
 
 bool pe_utils_str_ends_with(const char *str, const char *suffix) {
-  // FIXME: We should assume the pointers points to something valid.
-  //        I believe the correct test would be ( ! *str || ! *suffix ).
+	// FIXME: We should assume the pointers points to something valid.
+	//		I believe the correct test would be ( ! *str || ! *suffix ).
 	if (str == NULL || suffix == NULL)
 		return false;
 
@@ -131,7 +131,7 @@ static char windows1252_char( uint16_t chr )
 {
 	// windows-1252 Unicode codepoints from 0x80 to 0x9f.
 	// These 32 unicode codepoints was taken from Wikipedia:
-	// 	  https://en.wikipedia.org/wiki/Windows-1252
+	//	  https://en.wikipedia.org/wiki/Windows-1252
 	static const uint16_t w1252chrs[] = {
 		0x20ac,
 		0,			// invalid
@@ -160,11 +160,10 @@ static char windows1252_char( uint16_t chr )
 			return 0x80 + i;
 
 	// Any other char returns 0 (to ignore).
-    return 0;
+	return 0;
 }
 
 void pe_utils_str_widechar2ascii(char *output, size_t output_size, const char *widechar, size_t widechar_count) {
-	// FIX: Quick & dirty UFT16 to WINDOWS-1252 conversion
 	size_t length = pe_utils_min(output_size - 1, widechar_count);
 	uint16_t *p = (uint16_t *)widechar;
 	while (length--) {
@@ -179,16 +178,6 @@ void pe_utils_str_widechar2ascii(char *output, size_t output_size, const char *w
 
 	*output = '\0';
 }
-
-// FIX: Don't need this here. Only used in pesec.c!
-#if 0
-int pe_utils_round_up(int num_to_round, int multiple) {
-	if (multiple == 0)
-		return 0;
-
-	return (num_to_round + multiple - 1) / multiple * multiple;
-}
-#endif
 
 // FIXME: Don't need to open the file!
 // FIXME: I believe I saw the same routine inside another function in pe.c.
@@ -229,7 +218,7 @@ const char *pe_utils_get_homedir(void) {
 		return homedir;
 
 	// FIXME: Instead of using getpwuid() we could use
-	//				getpwuid_r() to make this function 'thread-safe'.
+	//        getpwuid_r() to make this function 'thread-safe'.
 	errno = 0;
 	struct passwd *pwd = getpwuid(getuid());
 

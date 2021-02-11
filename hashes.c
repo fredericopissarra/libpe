@@ -1,3 +1,4 @@
+/* vim: set ts=4 sw=4 noet: */
 /*
     libpe - the PE library
 
@@ -152,7 +153,6 @@ static pe_err_e get_headers_optional_hash(pe_ctx_t *ctx, pe_hash_t *output) {
 	}
 }
 
-// FIX: Don't need to allocate space for these constants!
 #define G_OPENSSL_HASH_MAXSIZE (EVP_MAX_MD_SIZE * 2 + 1)
 #define G_SSDEEP_HASH_MAXSIZE (FUZZY_MAX_RESULT)
 
@@ -218,7 +218,6 @@ bool pe_hash_raw_data(char *output, size_t output_size, const char *alg_name, co
 	EVP_MD_CTX_free(md_ctx);
 #endif
 
-	// FIX: Bettern than using sprintf().
 	char *p = output;
 	unsigned char *q = md_value;
 	while ( md_len-- )
@@ -516,7 +515,7 @@ static void imphash_load_imported_functions(pe_ctx_t *ctx, uint64_t offset, char
 
 					while ( p->number ) {
 						if ( hint == p->number )
-					  	{
+						{
 								el->function_name = strdup( p->fname );
 								break;
 						}
@@ -559,9 +558,6 @@ static void imphash_load_imported_functions(pe_ctx_t *ctx, uint64_t offset, char
 }
 
 static void freeNodes(element_t *currentNode) {
-	if (currentNode == NULL)
-		return;
-
 	element_t *temp;
 
 	while(currentNode != NULL) {

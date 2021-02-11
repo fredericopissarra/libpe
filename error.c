@@ -1,3 +1,4 @@
+/* vim: set ts=4 sw=4 noet: */
 /*
     libpe - the PE library
 
@@ -25,19 +26,19 @@
 #include <errno.h>
 #include <string.h>
 
-// FIX: Since all errors, except the first,
-//      are negative values, we could change the
-//      order of the strings in the static array
-//      to simplify this function.
+// Since all errors, except the first,
+// are negative values, we could change the
+// order of the strings in the static array
+// to simplify this function.
 //
-//      If you change pe_err_e in libpe/error.h, this
-//      this must be changed too.
+// If you change pe_err_e in libpe/error.h, this
+// this must be changed too.
 const char *pe_error_msg(pe_err_e error) {
 	static const char * const errors[] = {
 		// This is 0
 		"no error", // LIBPE_E_OK,
 
-		// FIX: Strings in reverse...
+		// Strings in reverse...
 		// ALL those errors are 'negative' (as in libpe/error.h).
 
 		// Misc
@@ -52,35 +53,27 @@ const char *pe_error_msg(pe_err_e error) {
 		"cannot read exports directory", // LIBPE_E_EXPORTS_CANT_READ_DIR
 		"cannot read relative virtual address", //LIBPE_E_EXPORTS_CANT_READ_RVA
 
-		"type punning failed", 	// LIBPE_E_TYPE_PUNNING_FAILED
-		"too many sections", 	// LIBPE_E_TOO_MANY_SECTIONS,
+		"type punning failed",	// LIBPE_E_TYPE_PUNNING_FAILED
+		"too many sections",	// LIBPE_E_TOO_MANY_SECTIONS,
 		"too many directories", // LIBPE_E_TOO_MANY_DIRECTORIES,
-		"close() failed", 		// LIBPE_E_CLOSE_FAILED,
-		"munmap() failed", 		// LIBPE_E_MUNMAP_FAILED,
-		"mmap() failed", 		// LIBPE_E_MMAP_FAILED,
+		"close() failed",		// LIBPE_E_CLOSE_FAILED,
+		"munmap() failed",		// LIBPE_E_MUNMAP_FAILED,
+		"mmap() failed",		// LIBPE_E_MMAP_FAILED,
 		"unsupported image format", // LIBPE_E_UNSUPPORTED_IMAGE,
-		"invalid signature", 	// LIBPE_E_INVALID_SIGNATURE,
+		"invalid signature",	// LIBPE_E_INVALID_SIGNATURE,
 		"missing OPTIONAL header", // LIBPE_E_MISSING_OPTIONAL_HEADER,
-		"missing COFF header", 	// LIBPE_E_MISSING_COFF_HEADER,
-		"invalid e_lfanew", 	// LIBPE_E_INVALID_LFANEW,
-		"not a PE file", 		// LIBPE_E_NOT_A_PE_FILE,
-		"not a regular file", 	// LIBPE_E_NOT_A_FILE,
-		"fstat() failed", 		// LIBPE_E_FSTAT_FAILED,
-		"fdopen() failed", 		// LIBPE_E_FDOPEN_FAILED,
-		"open() failed", 		// LIBPE_E_OPEN_FAILED,
-		"allocation failure"  	// LIBPE_E_ALLOCATION_FAILURE,
+		"missing COFF header",	// LIBPE_E_MISSING_COFF_HEADER,
+		"invalid e_lfanew",		// LIBPE_E_INVALID_LFANEW,
+		"not a PE file",		// LIBPE_E_NOT_A_PE_FILE,
+		"not a regular file",	// LIBPE_E_NOT_A_FILE,
+		"fstat() failed",		// LIBPE_E_FSTAT_FAILED,
+		"fdopen() failed",		// LIBPE_E_FDOPEN_FAILED,
+		"open() failed",		// LIBPE_E_OPEN_FAILED,
+		"allocation failure"	// LIBPE_E_ALLOCATION_FAILURE,
 	};
 
-  // FIX: Convoluted way to use negative errors! The code below is easier and faster.
-//	static const size_t index_max = LIBPE_SIZEOF_ARRAY(errors);
-//	size_t index = index_max + error;
-//	return (index < index_max)
-//		? errors[index]
-//		: (index == index_max)
-//			? errors[0] // LIBPE_E_OK
-//			: "invalid error code";
-
 	unsigned int index = abs(error);
+
 	if ( index >= LIBPE_SIZEOF_ARRAY(errors) )
 		return "invalid error code";
 	return errors[index];

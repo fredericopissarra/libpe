@@ -57,7 +57,6 @@ override CPPFLAGS += -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2
 #override LDFLAGS += -lssl -lcrypto
 LIBS = -lssl -lcrypto
 
-# --- FIX: -fPIC is necessary to ALL shared objects! Changed above.
 #ifneq ($(PLATFORM_OS), CYGWIN)
 #	override CFLAGS += -fPIC
 #endif
@@ -77,15 +76,6 @@ libpe_OBJS = $(addprefix ${libpe_BUILDDIR}/, $(addsuffix .o, $(basename ${libpe_
 .PHONY : libpe install strip-binaries install-strip uninstall clean
 
 all: libpe
-
-# FIX: WARNING.. ld expects -l option at the END of the command line or after the object files.
-#      From gcc's documentation:
-#
-# It makes a difference where in the command you write this option; the linker searches and processes
-# libraries and object files in the order they are specified. Thus, ‘foo.o -lz bar.o’ searches library
-# ‘z’ after file foo.o but before bar.o. If bar.o refers to functions in ‘z’, those functions 
-# may not be loaded.
-#
 
 libpe: CPPFLAGS += -D_GNU_SOURCE
 ifeq ($(PLATFORM_OS), CYGWIN)

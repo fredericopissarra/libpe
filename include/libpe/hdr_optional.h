@@ -1,22 +1,23 @@
+/* vim: set ts=4 sw=4 noet: */
 /*
-    libpe - the PE library
+	libpe - the PE library
 
-    Copyright (C) 2010 - 2017 libpe authors
-    
-    This file is part of libpe.
+	Copyright (C) 2010 - 2017 libpe authors
+	
+	This file is part of libpe.
 
-    libpe is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+	libpe is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Lesser General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
 
-    libpe is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
+	libpe is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public License
-    along with libpe.  If not, see <http://www.gnu.org/licenses/>.
+	You should have received a copy of the GNU Lesser General Public License
+	along with libpe.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #ifndef LIBPE_HDR_OPTIONAL_H
@@ -47,7 +48,7 @@ typedef enum {
 	// Extensible Firmware Interface (EFI) application
 	IMAGE_SUBSYSTEM_EFI_APPLICATION				= 10,
 	// EFI driver with boot services
-	IMAGE_SUBSYSTEM_EFI_BOOT_SERVICE_DRIVER 	= 11,
+	IMAGE_SUBSYSTEM_EFI_BOOT_SERVICE_DRIVER		= 11,
 	// EFI driver with run-time services
 	IMAGE_SUBSYSTEM_EFI_RUNTIME_DRIVER			= 12,
 	// EFI ROM image

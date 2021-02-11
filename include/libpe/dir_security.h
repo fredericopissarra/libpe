@@ -1,22 +1,23 @@
+/* vim: set ts=4 sw=4 noet: */
 /*
-    libpe - the PE library
+	libpe - the PE library
 
-    Copyright (C) 2010 - 2017 libpe authors
-    
-    This file is part of libpe.
+	Copyright (C) 2010 - 2017 libpe authors
+	
+	This file is part of libpe.
 
-    libpe is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+	libpe is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Lesser General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
 
-    libpe is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
+	libpe is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public License
-    along with libpe.  If not, see <http://www.gnu.org/licenses/>.
+	You should have received a copy of the GNU Lesser General Public License
+	along with libpe.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #ifndef LIBPE_DIR_SECURITY_H
@@ -63,11 +64,11 @@ typedef struct {
 	uint16_t wRevision;
 	// Specifies the type of certificate.
 	// This member can be one of the following values:
-	//   Value								Meaning
-	//   ----------------------------------------------------------------------------------------
-	//   WIN_CERT_TYPE_X509 				The certificate contains an X.509 Certificate.
-	//   WIN_CERT_TYPE_PKCS_SIGNED_DATA		The certificate contains a PKCS SignedData structure.
-	//   WIN_CERT_TYPE_RESERVED_1			Reserved.
+	//	 Value								Meaning
+	//	 ----------------------------------------------------------------------------------------
+	//	 WIN_CERT_TYPE_X509					The certificate contains an X.509 Certificate.
+	//	 WIN_CERT_TYPE_PKCS_SIGNED_DATA		The certificate contains a PKCS SignedData structure.
+	//	 WIN_CERT_TYPE_RESERVED_1			Reserved.
 	//	 WIN_CERT_TYPE_TS_STACK_SIGNED
 	uint16_t wCertificateType;
 	// A variable-sized array of bytes that contains the certificate data.
